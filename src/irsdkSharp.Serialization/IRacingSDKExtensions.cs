@@ -4,6 +4,7 @@ using irsdkSharp.Serialization.Models.Session;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using irsdkSharp.Enums;
 
 namespace irsdkSharp.Serialization
 {
@@ -30,34 +31,33 @@ namespace irsdkSharp.Serialization
                 IRacingSDK.GetFileMapView(racingSDK).ReadArray(0, data, 0, length);
                 //Serialise the string into objects, tada!
                 return IRacingDataModel.Serialize(
-                    data[racingSDK.Header.Buffer..(racingSDK.Header.Buffer + racingSDK.Header.BufferLength)],
-                    racingSDK.VarHeaders);
+                    data[racingSDK.Header.Offset..(racingSDK.Header.Offset + racingSDK.Header.BufferLength)],
+                    racingSDK.Headers.Values);
             }
             return null;
         }
 
         public static List<CarModel> GetPositions(this IRacingSDK racingSDK)
         {
-            var tick = (double)racingSDK.GetData("SessionTime");
-            //var CarIdx = (int[])racingSDK.GetData("CarIdx");
-            var CarIdxBestLapNum = (int[])racingSDK.GetData("CarIdxBestLapNum");
-            var CarIdxBestLapTime = (float[])racingSDK.GetData("CarIdxBestLapTime");
-            var CarIdxClassPosition = (int[])racingSDK.GetData("CarIdxClassPosition");
-            var CarIdxEstTime = (float[])racingSDK.GetData("CarIdxEstTime");
-            var CarIdxF2Time = (float[])racingSDK.GetData("CarIdxF2Time");
-            var CarIdxGear = (int[])racingSDK.GetData("CarIdxGear");
-            var CarIdxLap = (int[])racingSDK.GetData("CarIdxLap");
-            var CarIdxLapCompleted = (int[])racingSDK.GetData("CarIdxLapCompleted");
-            var CarIdxLapDistPct = (float[])racingSDK.GetData("CarIdxLapDistPct");
-            var CarIdxLastLapTime = (float[])racingSDK.GetData("CarIdxLastLapTime");
-            var CarIdxOnPitRoad = (bool[])racingSDK.GetData("CarIdxOnPitRoad");
-            var CarIdxP2P_Count = (int[])racingSDK.GetData("CarIdxP2P_Count");
-            var CarIdxP2P_Status = (bool[])racingSDK.GetData("CarIdxP2P_Status");
-            var CarIdxPosition = (int[])racingSDK.GetData("CarIdxPosition");
-            var CarIdxRPM = (float[])racingSDK.GetData("CarIdxRPM");
-            var CarIdxSteer = (float[])racingSDK.GetData("CarIdxSteer");
-            var CarIdxTrackSurface = (int[])racingSDK.GetData("CarIdxTrackSurface");
-            var CarIdxTrackSurfaceMaterial = (int[])racingSDK.GetData("CarIdxTrackSurfaceMaterial");
+            var tick = racingSDK.Data.SessionTick;
+            var CarIdxBestLapNum = racingSDK.Data.CarIdxBestLapNum;
+            var CarIdxBestLapTime = racingSDK.Data.CarIdxBestLapTime;
+            var CarIdxClassPosition = racingSDK.Data.CarIdxClassPosition;
+            var CarIdxEstTime = racingSDK.Data.CarIdxEstTime;
+            var CarIdxF2Time = racingSDK.Data.CarIdxF2Time;
+            var CarIdxGear = racingSDK.Data.CarIdxGear;
+            var CarIdxLap = racingSDK.Data.CarIdxLap;
+            var CarIdxLapCompleted = racingSDK.Data.CarIdxLapCompleted;
+            var CarIdxLapDistPct = racingSDK.Data.CarIdxLapDistPct;
+            var CarIdxLastLapTime = racingSDK.Data.CarIdxLastLapTime;
+            var CarIdxOnPitRoad = racingSDK.Data.CarIdxOnPitRoad;
+            var CarIdxP2P_Count = racingSDK.Data.CarIdxP2P_Count;
+            var CarIdxP2P_Status = racingSDK.Data.CarIdxP2P_Status;
+            var CarIdxPosition = racingSDK.Data.CarIdxPosition;
+            var CarIdxRPM = racingSDK.Data.CarIdxRPM;
+            var CarIdxSteer = racingSDK.Data.CarIdxSteer;
+            var CarIdxTrackSurface = racingSDK.Data.CarIdxTrackSurface;
+            var CarIdxTrackSurfaceMaterial = racingSDK.Data.CarIdxTrackSurfaceMaterial;
 
             var results = new List<CarModel>();
             for (var i = 0; i< 64; i++)
@@ -88,7 +88,5 @@ namespace irsdkSharp.Serialization
             }
             return results;
         }
-
     }
-
 }
