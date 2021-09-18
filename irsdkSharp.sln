@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "irsdkSharp.Tests", "tests\i
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "irsdkSharp.Benchmark", "benchmark\irsdkSharp.Benchmark.csproj", "{7BE08414-549E-48E4-BA54-95A52F4AE288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "irsdkSharp.Benchmark.Published", "benchmark\irsdkSharp.Benchmark.Published.csproj", "{4622112E-0B46-44D9-94B8-9308830DD10F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{7BE08414-549E-48E4-BA54-95A52F4AE288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BE08414-549E-48E4-BA54-95A52F4AE288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BE08414-549E-48E4-BA54-95A52F4AE288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4622112E-0B46-44D9-94B8-9308830DD10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4622112E-0B46-44D9-94B8-9308830DD10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4622112E-0B46-44D9-94B8-9308830DD10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4622112E-0B46-44D9-94B8-9308830DD10F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
