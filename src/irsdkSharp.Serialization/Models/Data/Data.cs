@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace irsdkSharp.Serialization.Models.Data
 {
-    public class DataModel
+    public class Data
     {
         private readonly byte[] _data;
         private readonly Dictionary<string, VarHeader> _headers;
 
-        public DataModel(byte[] data, Dictionary<string, VarHeader> headers)
+        public Data(byte[] data, Dictionary<string, VarHeader> headers)
         {
             _data = data;
             _headers = headers;           

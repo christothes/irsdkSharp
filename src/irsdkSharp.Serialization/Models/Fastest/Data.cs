@@ -28,42 +28,42 @@ namespace irsdkSharp.Serialization.Models.Fastest
             _headers = IRacingSDK.GetVarHeaders(sdk);
         }
 
-        //private IRacingSessionModel _session;
+        private IRacingSessionModel _session;
 
-        //public IRacingSessionModel Session
-        //{
-        //    get
-        //    {
-        //        var latest = _sdk.Header.SessionInfoUpdate;
-        //        if (latest > _currentSessionUpdate)
-        //        {
-        //            lock (this)
-        //            {
-        //                if (latest > _currentSessionUpdate)
-        //                {
-        //                    _currentSessionUpdate = latest;
-        //                    _session = Serialize(_sdk.GetSessionInfo());
-        //                }
-        //            }
-        //        }
-        //        return _session;
-        //    }
-        //}
+        public IRacingSessionModel Session
+        {
+            get
+            {
+                var latest = _sdk.Header.SessionInfoUpdate;
+                if (latest > _currentSessionUpdate)
+                {
+                    lock (this)
+                    {
+                        if (latest > _currentSessionUpdate)
+                        {
+                            _currentSessionUpdate = latest;
+                            _session = Serialize(_sdk.GetSessionInfo());
+                        }
+                    }
+                }
+                return _session;
+            }
+        }
 
-        //private static IRacingSessionModel Serialize(string yaml)
-        //{
-        //    using var r = new StringReader(yaml);
-        //    var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
-        //    try
-        //    {
-        //        return deserializer.Deserialize<IRacingSessionModel>(r);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.InnerException.Message);
-        //        return null;
-        //    }
-        //}
+        private static IRacingSessionModel Serialize(string yaml)
+        {
+            using var r = new StringReader(yaml);
+            var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
+            try
+            {
+                return deserializer.Deserialize<IRacingSessionModel>(r);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.InnerException.Message);
+                return null;
+            }
+        }
 
         /// <summary>
         /// Density of air at start/finish line
@@ -2283,12 +2283,23 @@ namespace irsdkSharp.Serialization.Models.Fastest
             ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
             : default;
 
+        private float[] _velocityX_ST = new float[6];
+        
         /// <summary>
         /// X velocity
         /// </summary>
-        public float VelocityX_ST => _headers.TryGetValue(nameof(VelocityX_ST), out var header)
-            ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
-            : default;
+        public float[] VelocityX_ST 
+        {
+            get
+            {
+                if (_headers.TryGetValue(nameof(VelocityX_ST), out var header))
+                {
+                    _fileView.ReadArray(_sdk.Header.Offset + header.Offset, _velocityX_ST, 0, header.Count);
+                }
+
+                return _velocityX_ST;
+            }
+        }
 
         /// <summary>
         /// Y velocity
@@ -2297,13 +2308,24 @@ namespace irsdkSharp.Serialization.Models.Fastest
             ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
             : default;
 
+        private float[] _velocityY_ST = new float[6];
+        
         /// <summary>
         /// Y velocity
         /// </summary>
-        public float VelocityY_ST => _headers.TryGetValue(nameof(VelocityY_ST), out var header)
-            ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
-            : default;
+        public float[] VelocityY_ST 
+        {
+            get
+            {
+                if (_headers.TryGetValue(nameof(VelocityY_ST), out var header))
+                {
+                    _fileView.ReadArray(_sdk.Header.Offset + header.Offset, _velocityY_ST, 0, header.Count);
+                }
 
+                return _velocityY_ST;
+            }
+        }
+        
         /// <summary>
         /// Z velocity
         /// </summary>
@@ -2311,12 +2333,23 @@ namespace irsdkSharp.Serialization.Models.Fastest
             ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
             : default;
 
+        private float[] _velocityZ_ST = new float[6];
+        
         /// <summary>
         /// Z velocity
         /// </summary>
-        public float VelocityZ_ST => _headers.TryGetValue(nameof(VelocityZ_ST), out var header)
-            ? _fileView.ReadSingle(_sdk.Header.Offset + header.Offset)
-            : default;
+        public float[] VelocityZ_ST 
+        {
+            get
+            {
+                if (_headers.TryGetValue(nameof(VelocityZ_ST), out var header))
+                {
+                    _fileView.ReadArray(_sdk.Header.Offset + header.Offset, _velocityZ_ST, 0, header.Count);
+                }
+
+                return _velocityZ_ST;
+            }
+        }
 
         /// <summary>
         /// Vertical acceleration (including gravity)
@@ -2419,6 +2452,7 @@ namespace irsdkSharp.Serialization.Models.Fastest
         public override string ToString()
         {
             return $@"Data:
+Session: {Session.ToString()}
 AirDensity: {AirDensity.ToString()}
 AirPressure: {AirPressure.ToString()}
 AirTemp: {AirTemp.ToString()}
@@ -2683,11 +2717,11 @@ TireSetsUsed: {TireSetsUsed.ToString()}
 TrackTemp: {TrackTemp.ToString()}
 TrackTempCrew: {TrackTempCrew.ToString()}
 VelocityX: {VelocityX.ToString()}
-VelocityX_ST: {VelocityX_ST.ToString()}
+VelocityX_ST: {string.Join(',', VelocityX_ST.Select(e => e.ToString()))}
 VelocityY: {VelocityY.ToString()}
-VelocityY_ST: {VelocityY_ST.ToString()}
+VelocityY_ST: {string.Join(',', VelocityY_ST.Select(e => e.ToString()))}
 VelocityZ: {VelocityZ.ToString()}
-VelocityZ_ST: {VelocityZ_ST.ToString()}
+VelocityZ_ST: {string.Join(',', VelocityZ_ST.Select(e => e.ToString()))}
 VertAccel: {VertAccel.ToString()}
 VertAccel_ST: {VertAccel_ST.ToString()}
 VidCapActive: {VidCapActive.ToString()}

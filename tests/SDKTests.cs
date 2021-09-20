@@ -17,14 +17,12 @@ namespace irsdkSharp.Tests
     public class Tests
     {
         IRacingSDK sdk;
-        IRacingDataModel data;
-        IRacingSessionModel session;
 
         [OneTimeSetUp]
         public void Setup()
         {
             var memMap = MemoryMappedFile.CreateFromFile(Path.Combine("testdata", "session.ibt"));
-            sdk = new IRacingSDK(memMap.CreateViewAccessor());
+            sdk = new IRacingSDK(accessor: memMap.CreateViewAccessor());
             Assert.IsTrue(sdk.Startup(false));
         }
 
@@ -34,46 +32,25 @@ namespace irsdkSharp.Tests
             sdk.Shutdown();
         }
 
-        [Test, Order(1)]
+        [Test]
         public void GetSerializedSession()
         {
-            session = sdk.GetSerializedSessionInfo();
+            var session = sdk.GetSerializedSessionInfo();
             Assert.NotNull(session);
         }
 
-        [Test, Order(1)]
+        [Test]
+        public void GetDataSerializedSession()
+        {
+            var session = sdk.GetData().Session;
+            Assert.NotNull(session);
+        }
+
+        [Test]
         public void GetSerializedData()
         {
-            data = sdk.GetSerializedData();
+            var data = sdk.GetSerializedData();
             Assert.NotNull(data);
-        }
-
-        [Test]
-        public void SerializedSessionMulti()
-        {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-            for (var i = 0; i < 1000; i++)
-            {
-                GetSerializedSession();
-            }
-            stopWatch.Stop();
-            Console.WriteLine($"{nameof(SerializedSessionMulti)}: {stopWatch.ElapsedTicks / 1000}");
-
-        }
-
-        [Test]
-        public void SerializedDataMulti()
-        {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-            for (var i = 0; i < 1000; i++)
-            {
-                GetSerializedData();
-            }
-            stopWatch.Stop();
-            Console.WriteLine($"{nameof(SerializedDataMulti)}: {stopWatch.ElapsedTicks / 1000}");
-          
         }
 
         [Test]
@@ -86,35 +63,23 @@ namespace irsdkSharp.Tests
         [Test]
         public void GetDataProperty()
         {
+            var data = sdk.GetSerializedData();
             Assert.NotZero(data.Data.SessionTick);
         }
-
+        
         [Test]
         public void GetData()
         {
-            TestContext.WriteLine(data.Data.ToString());
-
+            var data = sdk.GetData();
+            TestContext.WriteLine(data.ToString());
         }
 
         [Test]
         public void GetPositions()
         {
-            var positions = sdk.GetPositions(out double sessionTime);
+            var data = sdk.GetData();
+            var positions = sdk.GetPositions(data);
             Assert.IsNotEmpty(positions);
-            Assert.NotZero(sessionTime);
-        }
-
-        [Test]
-        public void GetPositionsMulti()
-        {
-            Stopwatch stopWatch = new();
-            stopWatch.Start();
-            for (var i = 0; i < 1000; i++)
-            {
-                GetPositions();
-            }
-            stopWatch.Stop();
-            Console.WriteLine($"{nameof(GetPositionsMulti)}: {stopWatch.ElapsedTicks / 1000}");
         }
     }
 }

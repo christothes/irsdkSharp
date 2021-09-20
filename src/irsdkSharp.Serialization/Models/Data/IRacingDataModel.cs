@@ -19,7 +19,7 @@ namespace irsdkSharp.Serialization.Models.Data
         public static IRacingDataModel Serialize(byte[] toSerialize, Dictionary<string, VarHeader> headers)
         {
 
-            var model = new DataModel(toSerialize, headers);
+            var model = new Data(toSerialize, headers);
            
             return new IRacingDataModel
             {
@@ -27,7 +27,7 @@ namespace irsdkSharp.Serialization.Models.Data
             };
         }
         
-        public DataModel Data { get; set; }
+        public Data Data { get; set; }
 
         public List<VarHeader> Missing { get; set; } = new List<VarHeader>();
     }

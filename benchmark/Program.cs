@@ -8,6 +8,7 @@ using irsdkSharp.Serialization;
 using irsdkSharp.Serialization.Models.Data;
 using irsdkSharp.Serialization.Models.Fastest;
 using irsdkSharp.Serialization.Models.Session;
+using Data = irsdkSharp.Serialization.Models.Fastest.Data;
 
 namespace irsdkSharp.Benchmark
 {
@@ -17,88 +18,80 @@ namespace irsdkSharp.Benchmark
         private readonly IRacingSDK sdk;
         private readonly IRacingDataModel _dataModel;
         private readonly Data _data;
+
         public Runner()
         {
             var memMap = MemoryMappedFile.CreateFromFile(Path.Combine("data", "session.ibt"));
-            sdk = new IRacingSDK(memMap.CreateViewAccessor());
+            sdk = new IRacingSDK(accessor: memMap.CreateViewAccessor());
             sdk.Startup(false);
 
             _dataModel = sdk.GetSerializedData();
             _data = sdk.GetData();
         }
 
+        // [Benchmark]
         public IRacingSessionModel SerializeSessionInformation() => sdk.GetSerializedSessionInfo();
 
         [Benchmark]
+        public IRacingSessionModel DataSession() => _data.Session;
+
+        // [Benchmark]
         public IRacingDataModel SerializeDataModel() => sdk.GetSerializedData();
 
+
         [Benchmark]
-        public void AccessDataModel()
+        public void IRacingDataModel_GetFloatValue()
         {
-            _ = _dataModel.Data.AirPressure;
+            var value = _dataModel.Data.AirPressure;
         }
 
         [Benchmark]
-        public void AccessDataModelAirDensity()
+        public void IRacingDataModel_GetIntValue()
         {
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
-            _ = _dataModel.Data.AirDensity;
+            var value = _dataModel.Data.Gear;
         }
 
+        [Benchmark]
+        public void IRacingDataModel_GetBoolValue()
+        {
+            var value = _dataModel.Data.SteeringWheelUseLinear;
+        }
+
+        [Benchmark]
+        public void IRacingDataModel_GetArrayValue()
+        {
+            var value = _dataModel.Data.LongAccel_ST;
+        }
 
         [Benchmark]
         public Data Data() => sdk.GetData();
 
         [Benchmark]
-        public void AccessData()
+        public void Data_GetFloatValue()
         {
-            _ = _data.AirPressure;
+            var value = _data.AirPressure;
         }
 
         [Benchmark]
-        public void AccessDataAirDensity()
+        public void Data_GetIntValue()
         {
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
-            _ = _data.AirDensity;
+            var value = _data.Gear;
         }
 
-        //[Benchmark]
-        public List<CarModel> Positions() => sdk.GetPositions(out var sessionTime);
+        [Benchmark]
+        public void Data_GetBoolValue()
+        {
+            var value = _data.dcStarter;
+        }
 
-        //[Benchmark]
-        public List<PositionModel> PositionsNew() => sdk.GetPositionsNew();
+        [Benchmark]
+        public void Data_GetArrayValue()
+        {
+            var value = _data.CarIdxSteer;
+        }
+
+        [Benchmark]
+        public void GetPositions() => sdk.GetPositions(_data);
 
         public void Dispose()
         {

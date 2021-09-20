@@ -35,6 +35,5 @@ namespace irsdkSharp.Serialization.Models.Session
         public RadioInfoModel RadioInfo { get; set; }
         public DriverInfoModel DriverInfo { get; set; }
         public SplitTimeInfoModel SplitTimeInfo { get; set; }
-
     }
 }

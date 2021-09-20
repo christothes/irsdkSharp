@@ -4,15 +4,14 @@ using irsdkSharp.Serialization.Models.Fastest;
 using irsdkSharp.Serialization.Models.Session;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Data = irsdkSharp.Serialization.Models.Fastest.Data;
 
 namespace irsdkSharp.Serialization
 {
     public static class IRacingSDKExtensions
     {
         public static Data GetData(this IRacingSDK racingSDK) 
-        {
-            return new Data(racingSDK);
-        }
+            => new Data(racingSDK);
 
         public static IRacingSessionModel GetSerializedSessionInfo(this IRacingSDK racingSDK)
         {
@@ -39,9 +38,8 @@ namespace irsdkSharp.Serialization
             return null;
         }
 
-        public static List<PositionModel> GetPositionsNew(this IRacingSDK racingSDK)
+        public static List<PositionModel> GetPositions(this IRacingSDK sdk, Data data)
         {
-            var data = new Data(racingSDK);
             var tick = data.SessionTick;
             var CarIdxBestLapNum = data.CarIdxBestLapNum;
             var CarIdxBestLapTime = data.CarIdxBestLapTime;
@@ -62,7 +60,7 @@ namespace irsdkSharp.Serialization
             var CarIdxTrackSurface = data.CarIdxTrackSurface;
             var CarIdxTrackSurfaceMaterial = data.CarIdxTrackSurfaceMaterial;
 
-            var results = new List<PositionModel>();
+            var results = new List<PositionModel>(64);
             for (var i = 0; i< 64; i++)
             {
                 results.Add(new PositionModel
@@ -90,21 +88,6 @@ namespace irsdkSharp.Serialization
                 });
             }
             return results;
-        }
-      
-        public static List<CarModel> GetPositions(this IRacingSDK racingSDK, out double sessionTime)
-        {
-            if (racingSDK.IsInitialized && racingSDK.Header != null)
-            {
-                var fileView = IRacingSDK.GetFileMapView(racingSDK);
-                var headers = IRacingSDK.GetVarHeaders(racingSDK);
-                var data = new byte[racingSDK.Header.BufferLength];
-                fileView.ReadArray(racingSDK.Header.Offset, data, 0, racingSDK.Header.BufferLength);
-                sessionTime = (double)racingSDK.GetData("SessionTime");
-                return IRacingDataModel.SerializeCars(data, headers);
-            }
-            sessionTime = 0;
-            return null;
         }
     }
 }
