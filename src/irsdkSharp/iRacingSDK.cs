@@ -20,7 +20,7 @@ namespace irsdkSharp
         private char[] trimChars = { '\0' };
         private readonly AutoResetEvent _gameLoopEvent;
         private readonly ILogger<IRacingSDK> _logger;
-        private readonly MemoryMappedViewAccessor _fileMapView;
+        private MemoryMappedViewAccessor _fileMapView;
         private Dictionary<string, VarHeader> _varHeaders;
         
         //VarHeader offsets
@@ -51,8 +51,7 @@ namespace irsdkSharp
 
         public IRacingSDK(ILogger<IRacingSDK> logger = null) : this(null, logger)
         {
-            var iRacingFile = MemoryMappedFile.OpenExisting(Constants.MemMapFileName);
-            _fileMapView = iRacingFile.CreateViewAccessor();
+            
         }
 
         public IRacingSDK(MemoryMappedViewAccessor accessor, ILogger<IRacingSDK> logger = null)
@@ -72,6 +71,8 @@ namespace irsdkSharp
             {
                 if (openWaitHandle)
                 {
+                    var iRacingFile = MemoryMappedFile.OpenExisting(Constants.MemMapFileName);
+                    _fileMapView = iRacingFile.CreateViewAccessor();
                     using var hEvent = EventWaitHandle.OpenExisting(Constants.DataValidEventName);
                     if (!hEvent.WaitOne(TimeSpan.FromSeconds(1)))
                     {
@@ -208,6 +209,7 @@ namespace irsdkSharp
         {
             IsInitialized = false;
             Header = null;
+            _fileMapView?.Dispose();
         }
 
         IntPtr GetBroadcastMessageID()

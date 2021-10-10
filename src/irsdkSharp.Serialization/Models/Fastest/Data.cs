@@ -121,23 +121,12 @@ namespace irsdkSharp.Serialization.Models.Fastest
             ? (CameraState) _fileView.ReadInt32(_sdk.Header.Offset + header.Offset)
             : default;
 
-        private int[] _camCarIdx = new int[64];
-
         /// <summary>
         /// Active camera's focus car index
         /// </summary>
-        public int[] CamCarIdx
-        {
-            get
-            {
-                if (_headers.TryGetValue(nameof(CamCarIdx), out var header))
-                {
-                    _fileView.ReadArray(_sdk.Header.Offset + header.Offset, _camCarIdx, 0, 64);
-                }
-
-                return _camCarIdx;
-            }
-        }
+        public int CamCarIdx => _headers.TryGetValue(nameof(CamCarIdx), out var header)
+            ? _fileView.ReadInt32(_sdk.Header.Offset + header.Offset)
+            : default;
 
         /// <summary>
         /// Active camera group number
@@ -341,6 +330,13 @@ namespace irsdkSharp.Serialization.Models.Fastest
                 }
 
                 return _carIdxLapDistPct;
+            }
+            set
+            {
+                if (_headers.TryGetValue(nameof(CarIdxLapDistPct), out var header))
+                {
+                    _fileView.WriteArray(_sdk.Header.Offset + header.Offset, value, 0, 64);
+                }
             }
         }
 
@@ -2461,7 +2457,7 @@ BrakeABSactive: {BrakeABSactive.ToString()}
 BrakeRaw: {BrakeRaw.ToString()}
 CamCameraNumber: {CamCameraNumber.ToString()}
 CamCameraState: {CamCameraState.ToString()}
-CamCarIdx: {string.Join(',', CamCarIdx.Select(e => e.ToString()))}
+CamCarIdx: {CamCarIdx.ToString()}
 CamGroupNumber: {CamGroupNumber.ToString()}
 CarIdxBestLapNum: {string.Join(',', CarIdxBestLapNum.Select(e => e.ToString()))}
 CarIdxBestLapTime: {string.Join(',', CarIdxBestLapTime.Select(e => e.ToString()))}
